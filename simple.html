@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funciones Trigonométricas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        input[type=range] {
+            accent-color: #4f46e5;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen p-4 flex flex-col items-center justify-start font-sans">
+
+    <div class="max-w-5xl w-full bg-white rounded-xl shadow-lg p-6">
+        <h1 class="text-3xl font-bold text-center mb-6 text-indigo-700">Explorador Trigonométrico</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Contenedor del Círculo Unitario -->
+            <div class="flex flex-col items-center">
+                <h2 class="text-xl font-semibold mb-2">Círculo Unitario</h2>
+                <div class="relative border border-gray-200 rounded-lg bg-gray-50 overflow-hidden shadow-inner">
+                    <canvas id="circleCanvas" width="350" height="350"></canvas>
+                </div>
+            </div>
+
+            <!-- Contenedor de la Gráfica -->
+            <div class="flex flex-col items-center">
+                <h2 class="text-xl font-semibold mb-2">Gráfica de Funciones</h2>
+                <div class="relative border border-gray-200 rounded-lg bg-gray-50 overflow-hidden shadow-inner w-full flex justify-center">
+                    <canvas id="graphCanvas" width="500" height="350"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controles -->
+        <div class="mt-8 bg-indigo-50 p-6 rounded-lg border border-indigo-100">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                
+                <div class="flex-1 w-full flex flex-col items-center">
+                    <label for="angleSlider" class="text-lg font-medium mb-2">
+                        Ángulo: <span id="angleValue" class="font-bold text-indigo-600 w-12 inline-block text-right">45°</span>
+                    </label>
+                    <input type="range" id="angleSlider" min="0" max="360" value="45" class="w-full max-w-md cursor-pointer">
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto justify-center">
+                    <label class="flex items-center space-x-2 cursor-pointer bg-white p-2 rounded shadow-sm border border-red-200">
+                        <input type="checkbox" id="showSin" checked class="w-5 h-5 accent-red-500">
+                        <span class="font-medium text-red-600">Seno</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer bg-white p-2 rounded shadow-sm border border-blue-200">
+                        <input type="checkbox" id="showCos" checked class="w-5 h-5 accent-blue-500">
+                        <span class="font-medium text-blue-600">Coseno</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer bg-white p-2 rounded shadow-sm border border-green-200">
+                        <input type="checkbox" id="showTan" checked class="w-5 h-5 accent-green-500">
+                        <span class="font-medium text-green-600">Tangente</span>
+                    </label>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const circleCanvas = document.getElementById('circleCanvas');
+        const circleCtx = circleCanvas.getContext('2d');
+        const graphCanvas = document.getElementById('graphCanvas');
+        const graphCtx = graphCanvas.getContext('2d');
+        
+        const slider = document.getElementById('angleSlider');
+        const angleValueDisplay = document.getElementById('angleValue');
+        
+        const chkSin = document.getElementById('showSin');
+        const chkCos = document.getElementById('showCos');
+        const chkTan = document.getElementById('showTan');
+
+        // Configuración de colores
+        const COLOR_SIN = '#ef4444'; // Red 500
+        const COLOR_COS = '#3b82f6'; // Blue 500
+        const COLOR_TAN = '#10b981'; // Green 500
+        const COLOR_AXIS = '#9ca3af'; // Gray 400
+        const COLOR_TEXT = '#374151'; // Gray 700
+
+        // Estado actual
+        let currentAngleDeg = parseInt(slider.value);
+        let currentAngleRad = (currentAngleDeg * Math.PI) / 180;
+
+        function updateState() {
+            currentAngleDeg = parseInt(slider.value);
+            currentAngleRad = (currentAngleDeg * Math.PI) / 180;
+            angleValueDisplay.textContent = currentAngleDeg + '°';
+            draw();
+        }
+
+        slider.addEventListener('input', updateState);
+        chkSin.addEventListener('change', draw);
+        chkCos.addEventListener('change', draw);
+        chkTan.addEventListener('change', draw);
+
+        function drawCircle() {
+            const width = circleCanvas.width;
+            const height = circleCanvas.height;
+            const cx = width / 2;
+            const cy = height / 2;
+            const radius = 120;
+
+            circleCtx.clearRect(0, 0, width, height);
+
+            // Dibujar ejes
+            circleCtx.beginPath();
+            circleCtx.strokeStyle = COLOR_AXIS;
+            circleCtx.lineWidth = 1;
+            circleCtx.moveTo(0, cy);
+            circleCtx.lineTo(width, cy);
+            circleCtx.moveTo(cx, 0);
+            circleCtx.lineTo(cx, height);
+            circleCtx.stroke();
+
+            // Dibujar círculo unitario
+            circleCtx.beginPath();
+            circleCtx.strokeStyle = COLOR_TEXT;
+            circleCtx.lineWidth = 2;
+            circleCtx.arc(cx, cy, radius, 0, 2 * Math.PI);
+            circleCtx.stroke();
+
+            // Calcular coordenadas del punto
+            const px = cx + radius * Math.cos(currentAngleRad);
+            const py = cy - radius * Math.sin(currentAngleRad);
+
+            // Dibujar sector del ángulo
+            circleCtx.beginPath();
+            circleCtx.fillStyle = 'rgba(79, 70, 229, 0.2)'; // Indigo ligero
+            circleCtx.moveTo(cx, cy);
+            circleCtx.arc(cx, cy, radius * 0.3, 0, -currentAngleRad, true);
+            circleCtx.fill();
+
+            // Dibujar Coseno
+            if (chkCos.checked) {
+                circleCtx.beginPath();
+                circleCtx.strokeStyle = COLOR_COS;
+                circleCtx.lineWidth = 4;
+                circleCtx.moveTo(cx, cy);
+                circleCtx.lineTo(px, cy);
+                circleCtx.stroke();
+            }
+
+            // Dibujar Seno
+            if (chkSin.checked) {
+                circleCtx.beginPath();
+                circleCtx.strokeStyle = COLOR_SIN;
+                circleCtx.lineWidth = 4;
+                circleCtx.moveTo(px, cy);
+                circleCtx.lineTo(px, py);
+                circleCtx.stroke();
+            }
+
+            // Dibujar Tangente (Línea x=1)
+            if (chkTan.checked) {
+                const tanY = cy - radius * Math.tan(currentAngleRad);
+                // Limitar dibujo si se va al infinito
+                if (Math.abs(Math.tan(currentAngleRad)) < 10) {
+                    circleCtx.beginPath();
+                    circleCtx.strokeStyle = COLOR_TAN;
+                    circleCtx.lineWidth = 4;
+                    circleCtx.moveTo(cx + radius, cy);
+                    circleCtx.lineTo(cx + radius, tanY);
+                    circleCtx.stroke();
+                }
+                
+                // Extender línea del radio para encontrar la tangente
+                circleCtx.beginPath();
+                circleCtx.strokeStyle = 'rgba(16, 185, 129, 0.3)';
+                circleCtx.setLineDash([5, 5]);
+                circleCtx.moveTo(cx, cy);
+                circleCtx.lineTo(cx + radius, tanY);
+                circleCtx.stroke();
+                circleCtx.setLineDash([]);
+            }
+
+            // Dibujar radio (hipotenusa)
+            circleCtx.beginPath();
+            circleCtx.strokeStyle = '#111827';
+            circleCtx.lineWidth = 2;
+            circleCtx.moveTo(cx, cy);
+            circleCtx.lineTo(px, py);
+            circleCtx.stroke();
+
+            // Dibujar punto final
+            circleCtx.beginPath();
+            circleCtx.fillStyle = '#111827';
+            circleCtx.arc(px, py, 5, 0, 2 * Math.PI);
+            circleCtx.fill();
+        }
+
+        function drawGraph() {
+            const width = graphCanvas.width;
+            const height = graphCanvas.height;
+            const marginY = 50;
+            const marginX = 40;
+            const cy = height / 2;
+            const graphWidth = width - marginX * 2;
+            const amplitude = (height - marginY * 2) / 2;
+
+            graphCtx.clearRect(0, 0, width, height);
+
+            // Dibujar ejes
+            graphCtx.beginPath();
+            graphCtx.strokeStyle = COLOR_AXIS;
+            graphCtx.lineWidth = 1;
+            graphCtx.moveTo(marginX, cy);
+            graphCtx.lineTo(width - marginX, cy);
+            graphCtx.moveTo(marginX, marginY);
+            graphCtx.lineTo(marginX, height - marginY);
+            graphCtx.stroke();
+
+            // Etiquetas del eje X (Ángulos)
+            graphCtx.fillStyle = COLOR_TEXT;
+            graphCtx.font = '12px Arial';
+            graphCtx.textAlign = 'center';
+            const labels = ['0', 'π/2', 'π', '3π/2', '2π'];
+            for (let i = 0; i <= 4; i++) {
+                const x = marginX + (i / 4) * graphWidth;
+                graphCtx.fillText(labels[i], x, cy + 20);
+                // Pequeña marca
+                graphCtx.beginPath();
+                graphCtx.moveTo(x, cy - 5);
+                graphCtx.lineTo(x, cy + 5);
+                graphCtx.stroke();
+            }
+
+            // Dibujar curvas
+            function drawCurve(func, color) {
+                graphCtx.beginPath();
+                graphCtx.strokeStyle = color;
+                graphCtx.lineWidth = 2;
+                let isFirstPoint = true;
+
+                for (let x = 0; x <= graphWidth; x++) {
+                    const angle = (x / graphWidth) * 2 * Math.PI;
+                    const val = func(angle);
+                    
+                    // Prevenir que la tangente dibuje líneas verticales conectando +inf y -inf
+                    if (Math.abs(val) > 3) {
+                        isFirstPoint = true;
+                        continue;
+                    }
+
+                    const py = cy - val * amplitude;
+
+                    if (isFirstPoint) {
+                        graphCtx.moveTo(marginX + x, py);
+                        isFirstPoint = false;
+                    } else {
+                        graphCtx.lineTo(marginX + x, py);
+                    }
+                }
+                graphCtx.stroke();
+            }
+
+            if (chkCos.checked) drawCurve(Math.cos, COLOR_COS);
+            if (chkSin.checked) drawCurve(Math.sin, COLOR_SIN);
+            if (chkTan.checked) drawCurve(Math.tan, COLOR_TAN);
+
+            // Dibujar indicador del ángulo actual
+            const currentX = marginX + (currentAngleRad / (2 * Math.PI)) * graphWidth;
+            
+            graphCtx.beginPath();
+            graphCtx.strokeStyle = '#4f46e5';
+            graphCtx.setLineDash([4, 4]);
+            graphCtx.moveTo(currentX, marginY);
+            graphCtx.lineTo(currentX, height - marginY);
+            graphCtx.stroke();
+            graphCtx.setLineDash([]);
+
+            // Puntos en la gráfica actual
+            function drawMarker(func, color) {
+                const val = func(currentAngleRad);
+                if (Math.abs(val) <= 3) {
+                    const py = cy - val * amplitude;
+                    graphCtx.beginPath();
+                    graphCtx.fillStyle = color;
+                    graphCtx.arc(currentX, py, 6, 0, 2 * Math.PI);
+                    graphCtx.fill();
+                    graphCtx.strokeStyle = 'white';
+                    graphCtx.lineWidth = 2;
+                    graphCtx.stroke();
+                }
+            }
+
+            if (chkCos.checked) drawMarker(Math.cos, COLOR_COS);
+            if (chkSin.checked) drawMarker(Math.sin, COLOR_SIN);
+            if (chkTan.checked) drawMarker(Math.tan, COLOR_TAN);
+        }
+
+        function draw() {
+            drawCircle();
+            drawGraph();
+        }
+
+        // Inicializar
+        draw();
+        
+        // Ajustar tamaño del canvas en pantallas pequeñas si es necesario
+        window.addEventListener('resize', () => {
+            const containerWidth = document.querySelector('.max-w-5xl').clientWidth;
+            if (containerWidth < 768) {
+                graphCanvas.style.width = '100%';
+                graphCanvas.style.height = 'auto';
+            } else {
+                graphCanvas.style.width = '500px';
+                graphCanvas.style.height = '350px';
+            }
+        });
+    </script>
+</body>
+</html>
