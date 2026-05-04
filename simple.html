@@ -9,62 +9,62 @@
         input[type=range] {
             accent-color: #4f46e5;
         }
+        canvas {
+            display: block;
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 min-h-screen p-4 flex flex-col items-center justify-start font-sans">
+<body class="bg-gray-100 text-gray-900 h-screen w-screen p-2 md:p-4 flex flex-col font-sans overflow-hidden box-border">
 
-    <div class="max-w-5xl w-full bg-white rounded-xl shadow-lg p-6">
-        <h1 class="text-3xl font-bold text-center mb-6 text-indigo-700">Explorador Trigonométrico</h1>
+    <h1 class="text-2xl md:text-3xl font-bold text-center mb-2 md:mb-4 text-indigo-700 shrink-0">Explorador Trigonométrico</h1>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Contenedor del Círculo Unitario -->
-            <div class="flex flex-col items-center">
-                <h2 class="text-xl font-semibold mb-2">Círculo Unitario</h2>
-                <div class="relative border border-gray-200 rounded-lg bg-gray-50 overflow-hidden shadow-inner">
-                    <canvas id="circleCanvas" width="350" height="350"></canvas>
-                </div>
-            </div>
-
-            <!-- Contenedor de la Gráfica -->
-            <div class="flex flex-col items-center">
-                <h2 class="text-xl font-semibold mb-2">Gráfica de Funciones</h2>
-                <div class="relative border border-gray-200 rounded-lg bg-gray-50 overflow-hidden shadow-inner w-full flex justify-center">
-                    <canvas id="graphCanvas" width="500" height="350"></canvas>
-                </div>
+    <div class="flex-1 w-full flex flex-col md:flex-row gap-2 md:gap-4 min-h-0">
+        <!-- Contenedor del Círculo Unitario -->
+        <div class="flex-1 flex flex-col min-h-0 bg-white rounded-xl shadow p-2 md:p-4">
+            <h2 class="text-lg font-semibold mb-2 shrink-0 text-center">Círculo Unitario</h2>
+            <div id="circleContainer" class="flex-1 relative bg-gray-50 rounded-lg border border-gray-200 overflow-hidden w-full h-full">
+                <canvas id="circleCanvas" class="absolute top-0 left-0 w-full h-full"></canvas>
             </div>
         </div>
 
-        <!-- Controles -->
-        <div class="mt-8 bg-indigo-50 p-6 rounded-lg border border-indigo-100">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-                
-                <div class="flex-1 w-full flex flex-col items-center">
-                    <label for="angleSlider" class="text-lg font-medium mb-2">
-                        Ángulo: <span id="angleValue" class="font-bold text-indigo-600 w-12 inline-block text-right">45°</span>
-                    </label>
-                    <input type="range" id="angleSlider" min="0" max="360" value="45" class="w-full max-w-md cursor-pointer">
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto justify-center">
-                    <label class="flex items-center space-x-2 cursor-pointer bg-white p-2 rounded shadow-sm border border-red-200">
-                        <input type="checkbox" id="showSin" checked class="w-5 h-5 accent-red-500">
-                        <span class="font-medium text-red-600">Seno</span>
-                    </label>
-                    <label class="flex items-center space-x-2 cursor-pointer bg-white p-2 rounded shadow-sm border border-blue-200">
-                        <input type="checkbox" id="showCos" checked class="w-5 h-5 accent-blue-500">
-                        <span class="font-medium text-blue-600">Coseno</span>
-                    </label>
-                    <label class="flex items-center space-x-2 cursor-pointer bg-white p-2 rounded shadow-sm border border-green-200">
-                        <input type="checkbox" id="showTan" checked class="w-5 h-5 accent-green-500">
-                        <span class="font-medium text-green-600">Tangente</span>
-                    </label>
-                </div>
-
+        <!-- Contenedor de la Gráfica -->
+        <div class="flex-1 flex flex-col min-h-0 bg-white rounded-xl shadow p-2 md:p-4">
+            <h2 class="text-lg font-semibold mb-2 shrink-0 text-center">Gráfica de Funciones</h2>
+            <div id="graphContainer" class="flex-1 relative bg-gray-50 rounded-lg border border-gray-200 overflow-hidden w-full h-full">
+                <canvas id="graphCanvas" class="absolute top-0 left-0 w-full h-full"></canvas>
             </div>
         </div>
     </div>
 
+    <!-- Controles -->
+    <div class="shrink-0 mt-2 md:mt-4 bg-white p-4 rounded-xl shadow border border-indigo-100 flex flex-col md:flex-row justify-between items-center gap-4">
+        
+        <div class="flex-1 w-full flex flex-col items-center">
+            <label for="angleSlider" class="text-base md:text-lg font-medium mb-1 md:mb-2">
+                Ángulo: <span id="angleValue" class="font-bold text-indigo-600 w-12 inline-block text-right">45°</span>
+            </label>
+            <input type="range" id="angleSlider" min="0" max="360" value="45" class="w-full max-w-2xl cursor-pointer">
+        </div>
+
+        <div class="flex flex-row gap-2 md:gap-4 w-full md:w-auto justify-center flex-wrap">
+            <label class="flex items-center space-x-2 cursor-pointer bg-gray-50 p-2 rounded shadow-sm border border-red-200">
+                <input type="checkbox" id="showSin" checked class="w-5 h-5 accent-red-500">
+                <span class="font-medium text-red-600 text-sm md:text-base">Seno</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer bg-gray-50 p-2 rounded shadow-sm border border-blue-200">
+                <input type="checkbox" id="showCos" checked class="w-5 h-5 accent-blue-500">
+                <span class="font-medium text-blue-600 text-sm md:text-base">Coseno</span>
+            </label>
+            <label class="flex items-center space-x-2 cursor-pointer bg-gray-50 p-2 rounded shadow-sm border border-green-200">
+                <input type="checkbox" id="showTan" checked class="w-5 h-5 accent-green-500">
+                <span class="font-medium text-green-600 text-sm md:text-base">Tangente</span>
+            </label>
+        </div>
+    </div>
+
     <script>
+        const circleContainer = document.getElementById('circleContainer');
+        const graphContainer = document.getElementById('graphContainer');
         const circleCanvas = document.getElementById('circleCanvas');
         const circleCtx = circleCanvas.getContext('2d');
         const graphCanvas = document.getElementById('graphCanvas');
@@ -78,11 +78,11 @@
         const chkTan = document.getElementById('showTan');
 
         // Configuración de colores
-        const COLOR_SIN = '#ef4444'; // Red 500
-        const COLOR_COS = '#3b82f6'; // Blue 500
-        const COLOR_TAN = '#10b981'; // Green 500
-        const COLOR_AXIS = '#9ca3af'; // Gray 400
-        const COLOR_TEXT = '#374151'; // Gray 700
+        const COLOR_SIN = '#ef4444';
+        const COLOR_COS = '#3b82f6';
+        const COLOR_TAN = '#10b981';
+        const COLOR_AXIS = '#9ca3af';
+        const COLOR_TEXT = '#374151';
 
         // Estado actual
         let currentAngleDeg = parseInt(slider.value);
@@ -100,12 +100,24 @@
         chkCos.addEventListener('change', draw);
         chkTan.addEventListener('change', draw);
 
+        function resizeCanvas() {
+            circleCanvas.width = circleContainer.clientWidth;
+            circleCanvas.height = circleContainer.clientHeight;
+            
+            graphCanvas.width = graphContainer.clientWidth;
+            graphCanvas.height = graphContainer.clientHeight;
+            
+            draw();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
         function drawCircle() {
             const width = circleCanvas.width;
             const height = circleCanvas.height;
             const cx = width / 2;
             const cy = height / 2;
-            const radius = 120;
+            const radius = Math.min(width, height) * 0.4; // Radio escalado al nuevo contenedor
 
             circleCtx.clearRect(0, 0, width, height);
 
@@ -132,7 +144,7 @@
 
             // Dibujar sector del ángulo
             circleCtx.beginPath();
-            circleCtx.fillStyle = 'rgba(79, 70, 229, 0.2)'; // Indigo ligero
+            circleCtx.fillStyle = 'rgba(79, 70, 229, 0.2)';
             circleCtx.moveTo(cx, cy);
             circleCtx.arc(cx, cy, radius * 0.3, 0, -currentAngleRad, true);
             circleCtx.fill();
@@ -157,10 +169,9 @@
                 circleCtx.stroke();
             }
 
-            // Dibujar Tangente (Línea x=1)
+            // Dibujar Tangente
             if (chkTan.checked) {
                 const tanY = cy - radius * Math.tan(currentAngleRad);
-                // Limitar dibujo si se va al infinito
                 if (Math.abs(Math.tan(currentAngleRad)) < 10) {
                     circleCtx.beginPath();
                     circleCtx.strokeStyle = COLOR_TAN;
@@ -170,7 +181,6 @@
                     circleCtx.stroke();
                 }
                 
-                // Extender línea del radio para encontrar la tangente
                 circleCtx.beginPath();
                 circleCtx.strokeStyle = 'rgba(16, 185, 129, 0.3)';
                 circleCtx.setLineDash([5, 5]);
@@ -180,7 +190,7 @@
                 circleCtx.setLineDash([]);
             }
 
-            // Dibujar radio (hipotenusa)
+            // Dibujar hipotenusa
             circleCtx.beginPath();
             circleCtx.strokeStyle = '#111827';
             circleCtx.lineWidth = 2;
@@ -188,7 +198,7 @@
             circleCtx.lineTo(px, py);
             circleCtx.stroke();
 
-            // Dibujar punto final
+            // Dibujar punto
             circleCtx.beginPath();
             circleCtx.fillStyle = '#111827';
             circleCtx.arc(px, py, 5, 0, 2 * Math.PI);
@@ -198,8 +208,8 @@
         function drawGraph() {
             const width = graphCanvas.width;
             const height = graphCanvas.height;
-            const marginY = 50;
-            const marginX = 40;
+            const marginY = 40;
+            const marginX = width < 400 ? 25 : 40;
             const cy = height / 2;
             const graphWidth = width - marginX * 2;
             const amplitude = (height - marginY * 2) / 2;
@@ -216,7 +226,7 @@
             graphCtx.lineTo(marginX, height - marginY);
             graphCtx.stroke();
 
-            // Etiquetas del eje X (Ángulos)
+            // Etiquetas del eje X
             graphCtx.fillStyle = COLOR_TEXT;
             graphCtx.font = '12px Arial';
             graphCtx.textAlign = 'center';
@@ -224,14 +234,13 @@
             for (let i = 0; i <= 4; i++) {
                 const x = marginX + (i / 4) * graphWidth;
                 graphCtx.fillText(labels[i], x, cy + 20);
-                // Pequeña marca
                 graphCtx.beginPath();
                 graphCtx.moveTo(x, cy - 5);
                 graphCtx.lineTo(x, cy + 5);
                 graphCtx.stroke();
             }
 
-            // Dibujar curvas
+            // Función para dibujar curvas
             function drawCurve(func, color) {
                 graphCtx.beginPath();
                 graphCtx.strokeStyle = color;
@@ -242,7 +251,6 @@
                     const angle = (x / graphWidth) * 2 * Math.PI;
                     const val = func(angle);
                     
-                    // Prevenir que la tangente dibuje líneas verticales conectando +inf y -inf
                     if (Math.abs(val) > 3) {
                         isFirstPoint = true;
                         continue;
@@ -264,7 +272,7 @@
             if (chkSin.checked) drawCurve(Math.sin, COLOR_SIN);
             if (chkTan.checked) drawCurve(Math.tan, COLOR_TAN);
 
-            // Dibujar indicador del ángulo actual
+            // Indicador de ángulo actual
             const currentX = marginX + (currentAngleRad / (2 * Math.PI)) * graphWidth;
             
             graphCtx.beginPath();
@@ -275,7 +283,7 @@
             graphCtx.stroke();
             graphCtx.setLineDash([]);
 
-            // Puntos en la gráfica actual
+            // Puntos en la gráfica
             function drawMarker(func, color) {
                 const val = func(currentAngleRad);
                 if (Math.abs(val) <= 3) {
@@ -300,20 +308,9 @@
             drawGraph();
         }
 
-        // Inicializar
-        draw();
+        // Inicializar dimensiones y dibujar
+        resizeCanvas();
         
-        // Ajustar tamaño del canvas en pantallas pequeñas si es necesario
-        window.addEventListener('resize', () => {
-            const containerWidth = document.querySelector('.max-w-5xl').clientWidth;
-            if (containerWidth < 768) {
-                graphCanvas.style.width = '100%';
-                graphCanvas.style.height = 'auto';
-            } else {
-                graphCanvas.style.width = '500px';
-                graphCanvas.style.height = '350px';
-            }
-        });
     </script>
 </body>
 </html>
