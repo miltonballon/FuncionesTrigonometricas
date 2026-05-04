@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Funciones trigonometricas interactivas</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2308111e'/%3E%3Ccircle cx='32' cy='32' r='19' fill='none' stroke='%2379a9ff' stroke-width='4'/%3E%3Cpath d='M32 32 L47 19' stroke='%23eef5ff' stroke-width='4' stroke-linecap='round'/%3E%3Ccircle cx='47' cy='19' r='4.5' fill='%23eef5ff'/%3E%3Cpath d='M32 32 L47 32' stroke='%23fbbf24' stroke-width='3' stroke-dasharray='4 4'/%3E%3Cpath d='M47 32 L47 19' stroke='%236ee7b7' stroke-width='3' stroke-dasharray='4 4'/%3E%3C/svg%3E"
+      type="image/svg+xml"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #07111f;
+        --panel: rgba(12, 24, 42, 0.94);
+        --panel-soft: rgba(18, 36, 59, 0.9);
+        --border: rgba(182, 210, 255, 0.16);
+        --text: #eef5ff;
+        --muted: #aac4ea;
+        --accent: #79a9ff;
+        --sine: #6ee7b7;
+        --cosine: #fbbf24;
+        --tangent: #f97373;
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+        --app-gap: clamp(8px, 1vw, 12px);
+        --panel-padding: clamp(10px, 1vw, 16px);
+        --card-padding: clamp(10px, 0.9vw, 12px);
+        --panel-radius: clamp(18px, 1.6vw, 24px);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: Arial, Helvetica, sans-serif;
+        background:
+          radial-gradient(circle at top, rgba(121, 169, 255, 0.18), transparent 34%),
+          linear-gradient(180deg, #050b14 0%, #08111e 100%);
+        color: var(--text);
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .app-shell {
+        width: min(1400px, calc(100vw - 2 * var(--app-gap)));
+        height: 100dvh;
+        margin: 0 auto;
+        padding: var(--app-gap) 0;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: var(--app-gap);
+      }
+
+      .panel {
+        background: linear-gradient(180deg, var(--panel), rgba(8, 18, 33, 0.96));
+        border: 1px solid var(--border);
+        border-radius: var(--panel-radius);
+        box-shadow: var(--shadow);
+      }
+
+      .topbar {
+        padding: clamp(12px, 1.2vw, 16px) clamp(14px, 1.6vw, 22px);
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: clamp(12px, 2vw, 24px);
+      }
+
+      .eyebrow,
+      .metric-label,
+      .compact-control span,
+      .quick-angles p,
+      .toggle-group legend {
+        margin: 0;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.76rem;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        margin-bottom: 0;
+        font-size: clamp(1.35rem, 2.2vw, 2.4rem);
+        line-height: 1.08;
+      }
+
+      h2,
+      h3 {
+        margin-bottom: 0.2rem;
+      }
+
+      .topbar-copy,
+      .section-copy,
+      .insight-card p {
+        margin-bottom: 0;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .workspace {
+        min-height: 0;
+        display: grid;
+        grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.25fr);
+        gap: var(--app-gap);
+      }
+
+      .circle-panel,
+      .graph-panel {
+        min-height: 0;
+        padding: var(--panel-padding);
+        display: grid;
+        gap: var(--app-gap);
+      }
+
+      .circle-panel {
+        grid-template-rows: auto minmax(0, 1fr) auto auto;
+      }
+
+      .graph-panel {
+        grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+      }
+
+      .section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: var(--app-gap);
+      }
+
+      .angle-readout {
+        min-width: 140px;
+        text-align: right;
+      }
+
+      .angle-primary {
+        display: block;
+        font-size: clamp(1rem, 1.4vw, 1.3rem);
+        font-weight: 700;
+      }
+
+      .angle-secondary {
+        color: var(--muted);
+        font-size: clamp(0.8rem, 1vw, 0.92rem);
+      }
+
+      .visual-shell {
+        min-height: 0;
+        border-radius: clamp(16px, 1.4vw, 20px);
+        background:
+          radial-gradient(circle at top, rgba(121, 169, 255, 0.12), transparent 44%),
+          rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(182, 210, 255, 0.1);
+        padding: clamp(6px, 0.8vw, 10px);
+      }
+
+      .circle-shell,
+      .graph-shell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      #unitCircle {
+        max-width: min(100%, 52vh);
+        max-height: min(52vh, 420px);
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      #trigGraph {
+        max-width: 100%;
+        max-height: min(42vh, 360px);
+      }
+
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: clamp(8px, 0.8vw, 10px);
+      }
+
+      .metric-card,
+      .insight-card {
+        padding: var(--card-padding);
+        border-radius: clamp(14px, 1.2vw, 18px);
+        background: rgba(23, 48, 75, 0.46);
+        border: 1px solid rgba(182, 210, 255, 0.1);
+      }
+
+      .metric-value {
+        margin: 0;
+        font-size: clamp(1rem, 1.15vw, 1.18rem);
+        font-weight: 700;
+      }
+
+      .quick-angles {
+        display: grid;
+        gap: 8px;
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: clamp(6px, 0.8vw, 8px);
+      }
+
+      .chip-button {
+        border: 1px solid rgba(121, 169, 255, 0.34);
+        background: rgba(121, 169, 255, 0.1);
+        color: var(--text);
+        padding: 0.36rem 0.62rem;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background 120ms ease, transform 120ms ease;
+        font-size: clamp(0.78rem, 0.95vw, 0.92rem);
+      }
+
+      .chip-button:hover,
+      .chip-button:focus-visible {
+        background: rgba(121, 169, 255, 0.2);
+        transform: translateY(-1px);
+      }
+
+      .control-strip {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: clamp(8px, 0.8vw, 10px);
+      }
+
+      .compact-control {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: clamp(8px, 0.9vw, 10px);
+        border-radius: clamp(14px, 1.2vw, 16px);
+        background: rgba(23, 48, 75, 0.46);
+        border: 1px solid rgba(182, 210, 255, 0.1);
+      }
+
+      input[type="number"] {
+        width: 100%;
+        padding: 0.55rem 0.65rem;
+        border-radius: 12px;
+        border: 1px solid rgba(182, 210, 255, 0.14);
+        background: rgba(6, 15, 26, 0.74);
+        color: var(--text);
+        font-size: clamp(0.85rem, 1vw, 1rem);
+      }
+
+      .status-strip {
+        display: flex;
+        justify-content: space-between;
+        gap: clamp(10px, 1vw, 14px);
+        align-items: center;
+      }
+
+      .toggle-group {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .toggle-group label,
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--muted);
+        font-size: clamp(0.8rem, 0.95vw, 0.92rem);
+      }
+
+      .legend-row {
+        display: flex;
+        gap: clamp(8px, 1vw, 12px);
+        flex-wrap: wrap;
+      }
+
+      .legend-item::before {
+        content: "";
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .legend-item.sine::before {
+        background: var(--sine);
+      }
+
+      .legend-item.cosine::before {
+        background: var(--cosine);
+      }
+
+      .legend-item.tangent::before {
+        background: var(--tangent);
+      }
+
+      .insight-grid {
+        display: grid;
+        grid-template-columns: 1.35fr 1fr;
+        gap: clamp(8px, 0.8vw, 10px);
+      }
+
+      .axis {
+        stroke: rgba(255, 255, 255, 0.34);
+        stroke-width: 1.6;
+      }
+
+      .grid-line {
+        stroke: rgba(255, 255, 255, 0.08);
+        stroke-width: 1;
+      }
+
+      .label {
+        fill: rgba(238, 245, 255, 0.86);
+        font-size: 12px;
+      }
+
+      .graph-label {
+        fill: rgba(170, 196, 234, 0.92);
+        font-size: 13px;
+      }
+
+      .guide-line {
+        stroke-dasharray: 6 6;
+        stroke-width: 2;
+      }
+
+      .sine-stroke {
+        stroke: var(--sine);
+      }
+
+      .cosine-stroke {
+        stroke: var(--cosine);
+      }
+
+      .tangent-stroke {
+        stroke: var(--tangent);
+      }
+
+      .active-line {
+        stroke: var(--accent);
+        stroke-width: 2;
+        stroke-dasharray: 8 6;
+      }
+
+      .function-path {
+        fill: none;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .marker-dot {
+        stroke: #04101f;
+        stroke-width: 2.5;
+      }
+
+      .drag-ring {
+        cursor: grab;
+      }
+
+      .drag-ring.dragging {
+        cursor: grabbing;
+      }
+
+      .formula-note {
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      @media (max-height: 820px) {
+        :root {
+          --app-gap: 8px;
+          --panel-padding: 10px;
+          --card-padding: 9px;
+        }
+
+        .topbar-copy,
+        .section-copy,
+        .insight-card p {
+          line-height: 1.35;
+          font-size: 0.93rem;
+        }
+
+        #unitCircle {
+          max-width: min(100%, 44vh);
+          max-height: min(44vh, 360px);
+        }
+
+        #trigGraph {
+          max-height: min(34vh, 300px);
+        }
+      }
+
+      @media (max-height: 700px) {
+        h1 {
+          font-size: clamp(1.2rem, 2vw, 1.6rem);
+        }
+
+        h2,
+        h3 {
+          font-size: 1rem;
+        }
+
+        .eyebrow,
+        .metric-label,
+        .compact-control span,
+        .quick-angles p,
+        .toggle-group legend {
+          font-size: 0.68rem;
+        }
+
+        .topbar {
+          padding: 10px 14px;
+        }
+
+        #unitCircle {
+          max-width: min(100%, 38vh);
+          max-height: min(38vh, 300px);
+        }
+
+        #trigGraph {
+          max-height: min(28vh, 240px);
+        }
+
+        .chip-button,
+        input[type="number"],
+        .toggle-group label,
+        .legend-item,
+        .topbar-copy,
+        .section-copy,
+        .insight-card p {
+          font-size: 0.8rem;
+        }
+      }
+
+      @media (max-width: 1180px) {
+        .workspace {
+          grid-template-columns: minmax(300px, 0.88fr) minmax(0, 1.12fr);
+        }
+
+        .control-strip {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .metrics-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .topbar {
+          align-items: start;
+        }
+
+        .control-strip {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .status-strip,
+        .section-heading {
+          align-items: start;
+        }
+      }
+
+      @media (max-width: 960px) {
+        .app-shell {
+          height: 100dvh;
+          width: min(100vw - 16px, 100%);
+        }
+
+        .topbar,
+        .status-strip,
+        .section-heading,
+        .workspace,
+        .insight-grid {
+          display: grid;
+        }
+
+        .workspace {
+          grid-template-columns: 1fr;
+          grid-template-rows: minmax(0, 0.92fr) minmax(0, 1.08fr);
+        }
+
+        .control-strip,
+        .insight-grid,
+        .metrics-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .app-shell {
+          width: calc(100vw - 12px);
+          padding: 6px 0;
+        }
+
+        .workspace {
+          grid-template-rows: minmax(0, 0.88fr) minmax(0, 1.12fr);
+        }
+
+        .topbar,
+        .circle-panel,
+        .graph-panel {
+          padding: 10px;
+        }
+
+        .control-strip,
+        .metrics-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .topbar-copy,
+        .quick-angles,
+        .legend-row,
+        .insight-card:last-child,
+        .graph-panel .section-copy,
+        .insight-grid {
+          display: none;
+        }
+
+        .control-strip {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .insight-grid {
+          grid-template-columns: 1fr;
+        }
+
+        #unitCircle,
+        #trigGraph {
+          max-width: 100%;
+        }
+
+        #unitCircle {
+          max-height: min(20vh, 176px);
+        }
+
+        #trigGraph {
+          max-height: min(13vh, 112px);
+        }
+
+        .topbar-copy,
+        .section-copy,
+        .insight-card p,
+        .chip-button,
+        input[type="number"],
+        .toggle-group label,
+        .legend-item {
+          font-size: 0.76rem;
+        }
+
+        .angle-primary {
+          font-size: 0.88rem;
+        }
+
+        .circle-panel,
+        .graph-panel {
+          gap: 4px;
+        }
+
+        .metric-card,
+        .insight-card,
+        .compact-control {
+          padding: 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar panel">
+        <div>
+          <h1>Arrastra el angulo sobre la circunferencia</h1>
+        </div>
+        <p class="topbar-copy">
+          El punto activo define <strong>(cos x, sin x)</strong> y mueve al mismo
+          tiempo las graficas de seno, coseno y tangente.
+        </p>
+      </header>
+
+      <main class="workspace">
+        <section class="panel circle-panel">
+          <div class="section-heading">
+            <div>
+              <h2>Circunferencia unitaria</h2>
+              <p id="dragHint" class="section-copy">
+                Arrastra el punto brillante sobre la circunferencia para girar el
+                angulo.
+              </p>
+            </div>
+            <div class="angle-readout">
+              <span id="principalAngle" class="angle-primary"></span>
+              <span id="quadrantLabel" class="angle-secondary"></span>
+            </div>
+          </div>
+
+          <div class="visual-shell circle-shell">
+            <svg
+              id="unitCircle"
+              viewBox="0 0 420 420"
+              role="img"
+              aria-label="Circunferencia unitaria interactiva"
+            ></svg>
+          </div>
+
+          <div class="metrics-grid">
+            <article class="metric-card">
+              <p class="metric-label">cos(x)</p>
+              <p id="cosValue" class="metric-value"></p>
+            </article>
+            <article class="metric-card">
+              <p class="metric-label">sin(x)</p>
+              <p id="sinValue" class="metric-value"></p>
+            </article>
+            <article class="metric-card">
+              <p class="metric-label">tan(x)</p>
+              <p id="tanValue" class="metric-value"></p>
+            </article>
+            <article class="metric-card">
+              <p class="metric-label">Identidad</p>
+              <p id="identityValue" class="metric-value"></p>
+            </article>
+          </div>
+
+          <div class="quick-angles">
+            <p>Saltos rapidos</p>
+            <div id="quickAngleButtons" class="chip-row" aria-label="Angulos notables"></div>
+          </div>
+        </section>
+
+        <section class="panel graph-panel">
+          <div class="section-heading">
+            <div>
+              <h2>Graficas sincronizadas</h2>
+              <p class="section-copy">
+                La linea vertical usa el mismo angulo que estas arrastrando.
+              </p>
+            </div>
+          </div>
+
+          <div class="visual-shell graph-shell">
+            <svg
+              id="trigGraph"
+              viewBox="0 0 900 360"
+              role="img"
+              aria-label="Graficas de seno, coseno y tangente"
+            ></svg>
+          </div>
+
+          <div class="control-strip">
+            <label class="compact-control">
+              <span>Grados</span>
+              <input id="angleDegrees" type="number" min="-360" max="360" step="1" value="45" />
+            </label>
+            <label class="compact-control">
+              <span>Radianes</span>
+              <input id="angleRadians" type="number" min="-6.2832" max="6.2832" step="0.01" value="0.785" />
+            </label>
+            <label class="compact-control">
+              <span>Amplitud</span>
+              <input id="amplitude" type="number" min="-3" max="3" step="0.1" value="1" />
+            </label>
+            <label class="compact-control">
+              <span>Frecuencia</span>
+              <input id="frequency" type="number" min="0.25" max="4" step="0.25" value="1" />
+            </label>
+            <label class="compact-control">
+              <span>Fase (&deg;)</span>
+              <input id="phaseDegrees" type="number" min="-180" max="180" step="1" value="0" />
+            </label>
+          </div>
+
+          <div class="status-strip">
+            <fieldset class="toggle-group">
+              <legend>Funciones visibles</legend>
+              <label><input id="showSine" type="checkbox" checked /> Seno</label>
+              <label><input id="showCosine" type="checkbox" checked /> Coseno</label>
+              <label><input id="showTangent" type="checkbox" checked /> Tangente</label>
+            </fieldset>
+
+            <div class="legend-row">
+              <span class="legend-item sine">Seno</span>
+              <span class="legend-item cosine">Coseno</span>
+              <span class="legend-item tangent">Tangente</span>
+            </div>
+          </div>
+
+          <div class="insight-grid">
+            <article class="insight-card">
+              <h3>Lectura actual</h3>
+              <p id="conceptNarrative"></p>
+            </article>
+            <article class="insight-card">
+              <h3>Valor notable</h3>
+              <p id="specialAngleSummary"></p>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const TAU = Math.PI * 2;
+      const GRAPH_DOMAIN = { min: -TAU, max: TAU };
+      const UNIT_CIRCLE = {
+        size: 420,
+        center: 210,
+        radius: 144,
+        dragTolerance: 42,
+        minActiveRadius: 24,
+        touchOuterPadding: 54,
+      };
+      const SPECIAL_ANGLES = [
+        { deg: 0, rad: "0", sin: "0", cos: "1" },
+        { deg: 30, rad: "pi/6", sin: "1/2", cos: "sqrt(3)/2" },
+        { deg: 45, rad: "pi/4", sin: "sqrt(2)/2", cos: "sqrt(2)/2" },
+        { deg: 60, rad: "pi/3", sin: "sqrt(3)/2", cos: "1/2" },
+        { deg: 90, rad: "pi/2", sin: "1", cos: "0" },
+        { deg: 120, rad: "2pi/3", sin: "sqrt(3)/2", cos: "-1/2" },
+        { deg: 135, rad: "3pi/4", sin: "sqrt(2)/2", cos: "-sqrt(2)/2" },
+        { deg: 150, rad: "5pi/6", sin: "1/2", cos: "-sqrt(3)/2" },
+        { deg: 180, rad: "pi", sin: "0", cos: "-1" },
+        { deg: 210, rad: "7pi/6", sin: "-1/2", cos: "-sqrt(3)/2" },
+        { deg: 225, rad: "5pi/4", sin: "-sqrt(2)/2", cos: "-sqrt(2)/2" },
+        { deg: 240, rad: "4pi/3", sin: "-sqrt(3)/2", cos: "-1/2" },
+        { deg: 270, rad: "3pi/2", sin: "-1", cos: "0" },
+        { deg: 300, rad: "5pi/3", sin: "-sqrt(3)/2", cos: "1/2" },
+        { deg: 315, rad: "7pi/4", sin: "-sqrt(2)/2", cos: "sqrt(2)/2" },
+        { deg: 330, rad: "11pi/6", sin: "-1/2", cos: "sqrt(3)/2" },
+        { deg: 360, rad: "2pi", sin: "0", cos: "1" },
+      ];
+
+      const state = {
+        angleDeg: 45,
+        amplitude: 1,
+        frequency: 1,
+        phaseDeg: 0,
+        visible: {
+          sin: true,
+          cos: true,
+          tan: true,
+        },
+        dragging: false,
+        activePointerId: null,
+      };
+
+      const elements = {
+        angleDegrees: document.querySelector("#angleDegrees"),
+        angleRadians: document.querySelector("#angleRadians"),
+        amplitude: document.querySelector("#amplitude"),
+        frequency: document.querySelector("#frequency"),
+        phaseDegrees: document.querySelector("#phaseDegrees"),
+        showSine: document.querySelector("#showSine"),
+        showCosine: document.querySelector("#showCosine"),
+        showTangent: document.querySelector("#showTangent"),
+        quickAngleButtons: document.querySelector("#quickAngleButtons"),
+        unitCircle: document.querySelector("#unitCircle"),
+        trigGraph: document.querySelector("#trigGraph"),
+        principalAngle: document.querySelector("#principalAngle"),
+        quadrantLabel: document.querySelector("#quadrantLabel"),
+        cosValue: document.querySelector("#cosValue"),
+        sinValue: document.querySelector("#sinValue"),
+        tanValue: document.querySelector("#tanValue"),
+        identityValue: document.querySelector("#identityValue"),
+        dragHint: document.querySelector("#dragHint"),
+        conceptNarrative: document.querySelector("#conceptNarrative"),
+        specialAngleSummary: document.querySelector("#specialAngleSummary"),
+      };
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function degToRad(deg) {
+        return (deg * Math.PI) / 180;
+      }
+
+      function radToDeg(rad) {
+        return (rad * 180) / Math.PI;
+      }
+
+      function normalizeDeg(deg) {
+        const normalized = ((deg % 360) + 360) % 360;
+        return normalized === 360 ? 0 : normalized;
+      }
+
+      function toPrincipalRad(rad) {
+        let normalized = rad % TAU;
+        if (normalized < 0) {
+          normalized += TAU;
+        }
+        return normalized;
+      }
+
+      function formatNumber(value, digits = 3) {
+        if (!Number.isFinite(value)) {
+          return "indefinida";
+        }
+        const rounded = Number(value.toFixed(digits));
+        return Object.is(rounded, -0) ? "0" : String(rounded);
+      }
+
+      function isZero(value, tolerance = 0.000001) {
+        return Math.abs(value) < tolerance;
+      }
+
+      function formatDegree(value) {
+        return `${formatNumber(value, 1)}deg`;
+      }
+
+      function formatRadians(value) {
+        return `${formatNumber(value, 3)} rad`;
+      }
+
+      function quadrantName(angleDeg) {
+        if (angleDeg === 0 || angleDeg === 90 || angleDeg === 180 || angleDeg === 270) {
+          return "Sobre un eje";
+        }
+        if (angleDeg > 0 && angleDeg < 90) return "Cuadrante I";
+        if (angleDeg > 90 && angleDeg < 180) return "Cuadrante II";
+        if (angleDeg > 180 && angleDeg < 270) return "Cuadrante III";
+        return "Cuadrante IV";
+      }
+
+      function nearestSpecialAngle(angleDeg) {
+        return SPECIAL_ANGLES.find((item) => Math.abs(item.deg - angleDeg) < 0.001) || null;
+      }
+
+      function trigValue(kind, input) {
+        if (kind === "sin") return Math.sin(input);
+        if (kind === "cos") return Math.cos(input);
+        return Math.tan(input);
+      }
+
+      function transformedInput(x) {
+        return state.frequency * (x - degToRad(state.phaseDeg));
+      }
+
+      function transformedValue(kind, x) {
+        return state.amplitude * trigValue(kind, transformedInput(x));
+      }
+
+      function signsSummary(cosValue, sinValue) {
+        const cosSign = isZero(cosValue) ? "cero" : cosValue > 0 ? "positivo" : "negativo";
+        const sinSign = isZero(sinValue) ? "cero" : sinValue > 0 ? "positivo" : "negativo";
+        return `cos(x) es ${cosSign} y sin(x) es ${sinSign}.`;
+      }
+
+      function renderQuickAngleButtons() {
+        elements.quickAngleButtons.innerHTML = SPECIAL_ANGLES.map(
+          (item) =>
+            `<button class="chip-button" type="button" data-angle="${item.deg}">${item.deg}&deg;</button>`,
+        ).join("");
+
+        elements.quickAngleButtons.querySelectorAll("button").forEach((button) => {
+          button.addEventListener("click", () => updateAngle(Number(button.dataset.angle)));
+        });
+      }
+
+      function updateInputs() {
+        elements.angleDegrees.value = String(Number(state.angleDeg.toFixed(2)));
+        elements.angleRadians.value = String(Number(degToRad(state.angleDeg).toFixed(3)));
+        elements.amplitude.value = String(state.amplitude);
+        elements.frequency.value = String(state.frequency);
+        elements.phaseDegrees.value = String(state.phaseDeg);
+        elements.showSine.checked = state.visible.sin;
+        elements.showCosine.checked = state.visible.cos;
+        elements.showTangent.checked = state.visible.tan;
+      }
+
+      function updateAngle(rawDeg) {
+        state.angleDeg = clamp(rawDeg, -360, 360);
+        render();
+      }
+
+      function updateStateValue(key, rawValue, min, max) {
+        const value = clamp(Number(rawValue), min, max);
+        state[key] = value;
+        render();
+      }
+
+      function circleArcPath(cx, cy, radius, endAngle) {
+        const limitedAngle = Math.min(endAngle, TAU - 0.001);
+        const startX = cx + radius;
+        const startY = cy;
+        const endX = cx + radius * Math.cos(limitedAngle);
+        const endY = cy - radius * Math.sin(limitedAngle);
+        const largeArcFlag = limitedAngle > Math.PI ? 1 : 0;
+        return `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${endX} ${endY}`;
+      }
+
+      function mapX(x, width, padding) {
+        const usable = width - padding * 2;
+        return padding + ((x - GRAPH_DOMAIN.min) / (GRAPH_DOMAIN.max - GRAPH_DOMAIN.min)) * usable;
+      }
+
+      function mapY(y, height, padding, yMax) {
+        const usable = height - padding * 2;
+        return padding + ((yMax - y) / (yMax * 2)) * usable;
+      }
+
+      function createPath(kind, width, height, padding, yMax) {
+        const samples = 900;
+        const pieces = [];
+        let current = [];
+
+        for (let index = 0; index <= samples; index += 1) {
+          const x = GRAPH_DOMAIN.min + ((GRAPH_DOMAIN.max - GRAPH_DOMAIN.min) * index) / samples;
+          const y = transformedValue(kind, x);
+          const shouldSplit = !Number.isFinite(y) || Math.abs(y) > yMax;
+
+          if (shouldSplit) {
+            if (current.length > 0) {
+              pieces.push(current.join(" "));
+              current = [];
+            }
+            continue;
+          }
+
+          current.push(
+            `${current.length === 0 ? "M" : "L"} ${mapX(x, width, padding)} ${mapY(y, height, padding, yMax)}`,
+          );
+        }
+
+        if (current.length > 0) {
+          pieces.push(current.join(" "));
+        }
+
+        return pieces
+          .map(
+            (segment) =>
+              `<path class="function-path ${
+                kind === "sin" ? "sine-stroke" : kind === "cos" ? "cosine-stroke" : "tangent-stroke"
+              }" d="${segment}" />`,
+          )
+          .join("");
+      }
+
+      function graphTicks() {
+        return [
+          { value: -TAU, label: "-2pi" },
+          { value: -Math.PI, label: "-pi" },
+          { value: -Math.PI / 2, label: "-pi/2" },
+          { value: 0, label: "0" },
+          { value: Math.PI / 2, label: "pi/2" },
+          { value: Math.PI, label: "pi" },
+          { value: TAU, label: "2pi" },
+        ];
+      }
+
+      function renderUnitCircle(metrics) {
+        const { size, center, radius } = UNIT_CIRCLE;
+        const angle = metrics.principalRad;
+        const pointX = center + radius * Math.cos(angle);
+        const pointY = center - radius * Math.sin(angle);
+        const tangentIntersectY = isZero(metrics.cosRaw, 0.001) ? null : center - radius * metrics.tanRaw;
+        const tangentWithinView =
+          tangentIntersectY !== null && tangentIntersectY >= 34 && tangentIntersectY <= size - 34;
+
+        elements.unitCircle.innerHTML = `
+          <line class="axis" x1="28" y1="${center}" x2="${size - 28}" y2="${center}" />
+          <line class="axis" x1="${center}" y1="28" x2="${center}" y2="${size - 28}" />
+          <circle
+            class="drag-ring ${state.dragging ? "dragging" : ""}"
+            cx="${center}"
+            cy="${center}"
+            r="${radius}"
+            fill="rgba(121, 169, 255, 0.05)"
+            stroke="rgba(121, 169, 255, 0.48)"
+            stroke-width="18"
+            stroke-linecap="round"
+            stroke-opacity="0.7"
+          />
+          <circle cx="${center}" cy="${center}" r="${radius - 9}" fill="rgba(4, 14, 25, 0.84)" stroke="rgba(121, 169, 255, 0.18)" stroke-width="2" />
+          <path d="${circleArcPath(center, center, 44, angle)}" fill="none" stroke="rgba(121, 169, 255, 0.95)" stroke-width="4" />
+          <line x1="${center}" y1="${center}" x2="${pointX}" y2="${pointY}" stroke="rgba(255,255,255,0.9)" stroke-width="4" />
+          <line class="guide-line cosine-stroke" x1="${center}" y1="${pointY}" x2="${pointX}" y2="${pointY}" />
+          <line class="guide-line sine-stroke" x1="${pointX}" y1="${center}" x2="${pointX}" y2="${pointY}" />
+          <line class="guide-line tangent-stroke" x1="${center + radius}" y1="${center - 146}" x2="${center + radius}" y2="${center + 146}" />
+          ${tangentWithinView ? `<line class="guide-line tangent-stroke" x1="${center + radius}" y1="${center}" x2="${center + radius}" y2="${tangentIntersectY}" />` : ""}
+          <circle class="marker-dot" cx="${pointX}" cy="${pointY}" r="11" fill="#eef5ff" />
+          <circle cx="${pointX}" cy="${center}" r="5" fill="#fbbf24" />
+          <circle cx="${center}" cy="${pointY}" r="5" fill="#6ee7b7" />
+          <text class="label" x="${size - 20}" y="${center - 10}">x</text>
+          <text class="label" x="${center + 9}" y="24">y</text>
+          <text class="label" x="${pointX + 12}" y="${pointY - 12}">(cos x, sin x)</text>
+          <text class="label" x="${center + 46}" y="${center - 10}">x</text>
+          <text class="label" x="${pointX + 10}" y="${center - 10}">cos(x)</text>
+          <text class="label" x="${center + 10}" y="${pointY - 8}">sin(x)</text>
+          <text class="label" x="${center + radius + 12}" y="${center - 116}">tan(x)</text>
+        `;
+      }
+
+      function renderGraph(metrics) {
+        const width = 900;
+        const height = 360;
+        const padding = 42;
+        const yMax = Math.max(4, Math.abs(state.amplitude) * 3.5);
+        const activeX = clamp(degToRad(state.angleDeg), GRAPH_DOMAIN.min, GRAPH_DOMAIN.max);
+        const show = state.visible;
+
+        const background = [
+          ...graphTicks().map(
+            (tick) => `
+              <line class="grid-line" x1="${mapX(tick.value, width, padding)}" y1="${padding}" x2="${mapX(tick.value, width, padding)}" y2="${height - padding}" />
+              <text class="graph-label" x="${mapX(tick.value, width, padding) - 12}" y="${height - 14}">${tick.label}</text>
+            `,
+          ),
+          ...[-yMax, 0, yMax].map(
+            (tick) => `
+              <line class="grid-line" x1="${padding}" y1="${mapY(tick, height, padding, yMax)}" x2="${width - padding}" y2="${mapY(tick, height, padding, yMax)}" />
+              <text class="graph-label" x="8" y="${mapY(tick, height, padding, yMax) + 4}">${formatNumber(tick, 1)}</text>
+            `,
+          ),
+        ].join("");
+
+        const paths = [
+          show.sin ? createPath("sin", width, height, padding, yMax) : "",
+          show.cos ? createPath("cos", width, height, padding, yMax) : "",
+          show.tan ? createPath("tan", width, height, padding, yMax) : "",
+        ].join("");
+
+        const markers = [
+          show.sin && Number.isFinite(metrics.sinGraph) && Math.abs(metrics.sinGraph) <= yMax
+            ? `<circle class="marker-dot" cx="${mapX(activeX, width, padding)}" cy="${mapY(metrics.sinGraph, height, padding, yMax)}" r="6.5" fill="#6ee7b7" />`
+            : "",
+          show.cos && Number.isFinite(metrics.cosGraph) && Math.abs(metrics.cosGraph) <= yMax
+            ? `<circle class="marker-dot" cx="${mapX(activeX, width, padding)}" cy="${mapY(metrics.cosGraph, height, padding, yMax)}" r="6.5" fill="#fbbf24" />`
+            : "",
+          show.tan && Number.isFinite(metrics.tanGraph) && Math.abs(metrics.tanGraph) <= yMax
+            ? `<circle class="marker-dot" cx="${mapX(activeX, width, padding)}" cy="${mapY(metrics.tanGraph, height, padding, yMax)}" r="6.5" fill="#f97373" />`
+            : "",
+        ].join("");
+
+        elements.trigGraph.innerHTML = `
+          ${background}
+          <line class="axis" x1="${padding}" y1="${mapY(0, height, padding, yMax)}" x2="${width - padding}" y2="${mapY(0, height, padding, yMax)}" />
+          <line class="axis" x1="${mapX(0, width, padding)}" y1="${padding}" x2="${mapX(0, width, padding)}" y2="${height - padding}" />
+          <line class="active-line" x1="${mapX(activeX, width, padding)}" y1="${padding}" x2="${mapX(activeX, width, padding)}" y2="${height - padding}" />
+          ${paths}
+          ${markers}
+        `;
+      }
+
+      function renderNarrative(metrics) {
+        const principalSpecial = nearestSpecialAngle(metrics.principalDeg);
+        const tanMessage = Number.isFinite(metrics.tanRaw)
+          ? `tan(x) = ${formatNumber(metrics.tanRaw)} y su punto correspondiente se marca en rojo sobre la grafica transformada.`
+          : "tan(x) es indefinida porque cos(x) llega a 0 y la recta tangente se vuelve vertical.";
+        const amplitudeMessage =
+          state.amplitude < 0
+            ? `La amplitud ${formatNumber(state.amplitude, 2)} invierte las curvas respecto del eje x.`
+            : `La amplitud ${formatNumber(state.amplitude, 2)} ajusta la altura de las curvas.`;
+
+        elements.dragHint.textContent = state.dragging
+          ? "Sigue arrastrando sobre la circunferencia para mover el angulo."
+          : "Arrastra el punto brillante sobre la circunferencia para girar el angulo.";
+
+        elements.conceptNarrative.innerHTML = `
+          El angulo actual es <strong>${formatDegree(state.angleDeg)}</strong> y se reduce a
+          <strong>${metrics.principalDeg}deg</strong>. El punto activo es
+          <span class="formula-note">(${formatNumber(metrics.cosRaw)}, ${formatNumber(metrics.sinRaw)})</span>,
+          asi que ${signsSummary(metrics.cosRaw, metrics.sinRaw)}
+          ${amplitudeMessage} La frecuencia <strong>${formatNumber(state.frequency, 2)}</strong>
+          comprime o expande el patron, y la fase <strong>${formatDegree(state.phaseDeg)}</strong>
+          lo desplaza horizontalmente. ${tanMessage}
+        `;
+
+        if (principalSpecial) {
+          elements.specialAngleSummary.innerHTML = `
+            Estas sobre un valor especial: <strong>${principalSpecial.deg}deg</strong>
+            (<strong>${principalSpecial.rad}</strong>). Entonces
+            <strong>sin(x) = ${principalSpecial.sin}</strong> y
+            <strong>cos(x) = ${principalSpecial.cos}</strong>.
+          `;
+        } else {
+          elements.specialAngleSummary.innerHTML = `
+            Este angulo no coincide con un valor notable clasico, asi que las razones
+            se muestran en forma decimal para comparar la circunferencia con las graficas.
+          `;
+        }
+      }
+
+      function renderMetrics(metrics) {
+        elements.principalAngle.textContent = `${metrics.principalDeg}deg / ${formatRadians(metrics.principalRad)}`;
+        elements.quadrantLabel.textContent = metrics.quadrant;
+        elements.cosValue.textContent = formatNumber(metrics.cosRaw);
+        elements.sinValue.textContent = formatNumber(metrics.sinRaw);
+        elements.tanValue.textContent = formatNumber(metrics.tanRaw);
+        elements.identityValue.textContent = formatNumber(metrics.identityRaw, 4);
+      }
+
+      function gatherMetrics() {
+        const principalDeg = normalizeDeg(state.angleDeg);
+        const principalRad = toPrincipalRad(degToRad(state.angleDeg));
+        const cosRaw = Math.cos(principalRad);
+        const sinRaw = Math.sin(principalRad);
+        const tanRaw = isZero(cosRaw, 0.0001) ? Number.POSITIVE_INFINITY : Math.tan(principalRad);
+        const activeX = degToRad(state.angleDeg);
+
+        return {
+          principalDeg,
+          principalRad,
+          quadrant: quadrantName(principalDeg),
+          cosRaw,
+          sinRaw,
+          tanRaw,
+          identityRaw: sinRaw ** 2 + cosRaw ** 2,
+          sinGraph: transformedValue("sin", activeX),
+          cosGraph: transformedValue("cos", activeX),
+          tanGraph: transformedValue("tan", activeX),
+        };
+      }
+
+      function pointerToSvgPoint(event) {
+        const point = elements.unitCircle.createSVGPoint();
+        point.x = event.clientX;
+        point.y = event.clientY;
+        const matrix = elements.unitCircle.getScreenCTM();
+        return matrix ? point.matrixTransform(matrix.inverse()) : { x: 0, y: 0 };
+      }
+
+      function distanceToCircle(point) {
+        return Math.hypot(point.x - UNIT_CIRCLE.center, point.y - UNIT_CIRCLE.center);
+      }
+
+      function canStartDrag(event, distance) {
+        const isTouchLike = event.pointerType === "touch" || event.pointerType === "pen";
+        if (distance < UNIT_CIRCLE.minActiveRadius) {
+          return false;
+        }
+        if (isTouchLike) {
+          return distance <= UNIT_CIRCLE.radius + UNIT_CIRCLE.touchOuterPadding;
+        }
+        return Math.abs(distance - UNIT_CIRCLE.radius) <= UNIT_CIRCLE.dragTolerance;
+      }
+
+      function angleFromPoint(point) {
+        const radians = Math.atan2(UNIT_CIRCLE.center - point.y, point.x - UNIT_CIRCLE.center);
+        return normalizeDeg(radToDeg(radians));
+      }
+
+      function setAngleFromPointer(event) {
+        const point = pointerToSvgPoint(event);
+        updateAngle(angleFromPoint(point));
+      }
+
+      function beginDrag(event) {
+        const point = pointerToSvgPoint(event);
+        const distance = distanceToCircle(point);
+        if (!canStartDrag(event, distance)) {
+          return;
+        }
+        event.preventDefault();
+        state.dragging = true;
+        state.activePointerId = event.pointerId;
+        setAngleFromPointer(event);
+      }
+
+      function moveDrag(event) {
+        if (!state.dragging || event.pointerId !== state.activePointerId) {
+          return;
+        }
+        event.preventDefault();
+        setAngleFromPointer(event);
+      }
+
+      function endDrag(event) {
+        if (!state.dragging || (event.pointerId !== undefined && event.pointerId !== state.activePointerId)) {
+          return;
+        }
+        state.dragging = false;
+        state.activePointerId = null;
+        render();
+      }
+
+      function render() {
+        updateInputs();
+        const metrics = gatherMetrics();
+        renderMetrics(metrics);
+        renderUnitCircle(metrics);
+        renderGraph(metrics);
+        renderNarrative(metrics);
+      }
+
+      function attachEvents() {
+        elements.angleDegrees.addEventListener("input", (event) => updateAngle(Number(event.target.value)));
+        elements.angleRadians.addEventListener("input", (event) => updateAngle(radToDeg(Number(event.target.value))));
+        elements.amplitude.addEventListener("input", (event) => updateStateValue("amplitude", event.target.value, -3, 3));
+        elements.frequency.addEventListener("input", (event) => updateStateValue("frequency", event.target.value, 0.25, 4));
+        elements.phaseDegrees.addEventListener("input", (event) => updateStateValue("phaseDeg", event.target.value, -180, 180));
+
+        elements.showSine.addEventListener("change", (event) => {
+          state.visible.sin = event.target.checked;
+          render();
+        });
+
+        elements.showCosine.addEventListener("change", (event) => {
+          state.visible.cos = event.target.checked;
+          render();
+        });
+
+        elements.showTangent.addEventListener("change", (event) => {
+          state.visible.tan = event.target.checked;
+          render();
+        });
+
+        elements.unitCircle.addEventListener("pointerdown", beginDrag);
+        window.addEventListener("pointermove", moveDrag, { passive: false });
+        window.addEventListener("pointerup", endDrag);
+        window.addEventListener("pointercancel", endDrag);
+      }
+
+      renderQuickAngleButtons();
+      attachEvents();
+      render();
+    </script>
+  </body>
+</html>
