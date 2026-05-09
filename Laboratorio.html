@@ -11,19 +11,18 @@
             font-family: 'Inter', sans-serif; 
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); 
             color: #1e293b; 
-            overflow-x: hidden;
+            overflow: hidden;
         }
         .glass { 
-            background: rgba(255, 255, 255, 0.4); 
-            backdrop-filter: blur(8px); 
-            border: 1px solid rgba(255, 255, 255, 0.6); 
-            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); 
+            background: rgba(255, 255, 255, 0.7); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.8); 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); 
         }
         .canvas-container { 
             position: relative; 
             width: 100%; 
             height: 100%; 
-            min-height: 300px;
             background: #ffffff; 
             border-radius: 1rem; 
             overflow: hidden; 
@@ -32,66 +31,66 @@
         .tab-active { 
             background-color: #4f46e5 !important; 
             color: white !important; 
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
         input[type="range"] { 
             accent-color: #4f46e5; 
             cursor: pointer; 
             width: 100%;
         }
-        .math-font { font-family: 'Times New Roman', Times, serif; font-style: italic; }
-        
-        /* Animación suave para cambios de pestaña */
-        section { transition: opacity 0.3s ease; }
+        section { transition: all 0.3s ease; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col h-screen overflow-hidden">
+<body class="h-screen flex flex-col">
 
     <header class="bg-slate-900 text-white p-4 shadow-xl shrink-0">
-        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-3">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
                 <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-300 to-cyan-300 bg-clip-text text-transparent">Laboratorio Matemático</h1>
-                <p class="text-slate-400 text-xs">Simulador de Aplicaciones Trigonométricas Reales</p>
+                <p class="text-slate-400 text-xs uppercase tracking-widest font-semibold">Simulador Interactivo de Aplicaciones Reales</p>
             </div>
             <nav class="flex flex-wrap justify-center gap-2">
-                <button onclick="switchTab('ferris')" id="tab-ferris" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 transition-all">🎡 Seno</button>
-                <button onclick="switchTab('solar')" id="tab-solar" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 transition-all">☀️ Coseno</button>
-                <button onclick="switchTab('lighthouse')" id="tab-lighthouse" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 transition-all">⛵ Tangente</button>
-                <button onclick="switchTab('sound')" id="tab-sound" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 transition-all">🎵 Ondas</button>
+                <button onclick="switchTab('ferris')" id="tab-ferris" class="px-5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 transition-all">🎡 Seno</button>
+                <button onclick="switchTab('solar')" id="tab-solar" class="px-5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 transition-all">☀️ Coseno</button>
+                <button onclick="switchTab('lighthouse')" id="tab-lighthouse" class="px-5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 transition-all">⛵ Tangente</button>
+                <button onclick="switchTab('sound')" id="tab-sound" class="px-5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 transition-all">🎵 Ondas</button>
             </nav>
         </div>
     </header>
 
-    <main class="flex-grow p-4 md:p-6 overflow-y-auto w-full">
+    <main class="flex-grow p-4 md:p-6 overflow-hidden">
         <div class="container mx-auto h-full flex flex-col">
             
             <!-- SECCIÓN: SENO (NORIA) -->
             <section id="content-ferris" class="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
                 <div class="lg:col-span-3 flex flex-col gap-4">
-                    <div class="glass p-4 rounded-2xl flex-grow flex flex-col">
-                        <div class="flex justify-between items-center mb-2">
-                            <h2 class="font-bold text-indigo-700">Función Seno: Altura en Movimiento</h2>
-                            <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-[10px] font-mono">y = R · sen(θ)</span>
+                    <div class="glass p-4 rounded-3xl flex-grow flex flex-col">
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="font-bold text-indigo-700 text-lg">Función Seno: Altura Periódica</h2>
+                            <span class="bg-indigo-100 text-indigo-800 px-4 py-1 rounded-full text-xs font-mono font-bold">y = R · sen(θ)</span>
                         </div>
-                        <div class="canvas-container flex-grow"><canvas id="ferrisCanvas"></canvas></div>
+                        <div class="canvas-container flex-grow shadow-inner">
+                            <canvas id="ferrisCanvas"></canvas>
+                        </div>
                     </div>
                 </div>
                 <div class="flex flex-col gap-4">
-                    <div class="glass p-5 rounded-2xl border-l-4 border-indigo-500">
-                        <h3 class="font-bold text-slate-800 text-sm mb-3 uppercase tracking-wider">Ajustes de Noria</h3>
-                        <label class="block">
-                            <span class="text-[10px] font-bold text-slate-500">VELOCIDAD</span>
+                    <div class="glass p-6 rounded-3xl border-l-8 border-indigo-500">
+                        <h3 class="font-black text-slate-800 text-sm mb-4 uppercase tracking-tighter">Control de Noria</h3>
+                        <label class="block space-y-2">
+                            <span class="text-[10px] font-black text-slate-400 uppercase">Velocidad de Giro</span>
                             <input type="range" id="ferrisSpeed" min="0" max="4" step="0.1" value="1">
                         </label>
-                        <div class="mt-4 p-3 bg-white/50 rounded-lg">
-                            <p class="text-xs font-semibold text-indigo-900">Ángulo actual (θ):</p>
-                            <p id="ferrisAngleVal" class="text-2xl font-black text-indigo-600">0°</p>
+                        <div class="mt-6 p-4 bg-indigo-50 rounded-2xl border border-indigo-100">
+                            <p class="text-[10px] font-bold text-indigo-900 uppercase">Ángulo θ</p>
+                            <p id="ferrisAngleVal" class="text-3xl font-black text-indigo-600">0°</p>
                         </div>
                     </div>
-                    <div class="glass p-5 rounded-2xl flex-grow hidden md:block overflow-y-auto">
-                        <h3 class="font-bold text-slate-800 text-sm mb-2">Teoría</h3>
+                    <div class="glass p-6 rounded-3xl flex-grow overflow-y-auto">
+                        <h4 class="font-bold text-slate-800 text-xs mb-2">Fundamento Matemático</h4>
                         <p class="text-xs text-slate-600 leading-relaxed">
-                            La altura de una cabina respecto al eje central se describe con el <strong>Seno</strong>. En el punto más alto, el seno es 1; en el centro es 0; y en el fondo es -1.
+                            Al girar, la altura de cada cabina sube y baja siguiendo un patrón repetitivo. El <strong>Seno</strong> proyecta el movimiento circular sobre el eje vertical, creando la onda característica de la noria.
                         </p>
                     </div>
                 </div>
@@ -100,28 +99,36 @@
             <!-- SECCIÓN: COSENO (ENERGÍA SOLAR) -->
             <section id="content-solar" class="hidden grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
                 <div class="lg:col-span-3 flex flex-col gap-4">
-                    <div class="glass p-4 rounded-2xl flex-grow flex flex-col">
-                        <div class="flex justify-between items-center mb-2">
-                            <h2 class="font-bold text-amber-700">Función Coseno: Eficiencia Fotovoltaica</h2>
-                            <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-[10px] font-mono">Eficiencia = cos(θ)</span>
+                    <div class="glass p-4 rounded-3xl flex-grow flex flex-col">
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="font-bold text-amber-700 text-lg">Función Coseno: Eficiencia Solar</h2>
+                            <span class="bg-amber-100 text-amber-800 px-4 py-1 rounded-full text-xs font-mono font-bold">Efic. = cos(θ) · 100%</span>
                         </div>
-                        <div class="canvas-container flex-grow"><canvas id="solarCanvas"></canvas></div>
+                        <div class="canvas-container flex-grow bg-gradient-to-b from-sky-100 to-white">
+                            <canvas id="solarCanvas"></canvas>
+                        </div>
                     </div>
                 </div>
                 <div class="flex flex-col gap-4">
-                    <div class="glass p-5 rounded-2xl border-l-4 border-amber-500">
-                        <h3 class="font-bold text-slate-800 text-sm mb-3">Posición Solar</h3>
-                        <input type="range" id="solarAngle" min="0" max="180" value="45">
-                        <div class="mt-4 space-y-2">
-                            <div class="p-2 bg-amber-50 rounded-lg text-center">
-                                <p class="text-[9px] uppercase font-bold text-amber-800">Ángulo θ (Normal)</p>
-                                <p id="solarAngleVal" class="text-xl font-black text-amber-600">45°</p>
+                    <div class="glass p-6 rounded-3xl border-l-8 border-amber-500">
+                        <h3 class="font-black text-slate-800 text-sm mb-4 uppercase tracking-tighter">Posición del Sol</h3>
+                        <input type="range" id="solarAngle" min="-90" max="90" value="30">
+                        <div class="mt-6 space-y-3">
+                            <div class="p-4 bg-amber-50 rounded-2xl border border-amber-100 text-center">
+                                <p class="text-[10px] uppercase font-bold text-amber-800">Inclinación (θ)</p>
+                                <p id="solarAngleVal" class="text-3xl font-black text-amber-600">30°</p>
                             </div>
-                            <div class="p-2 bg-amber-600 rounded-lg text-center text-white">
-                                <p class="text-[9px] uppercase font-bold text-amber-100">Eficiencia Total</p>
-                                <p id="calcEfficiency" class="text-xl font-black">70%</p>
+                            <div class="p-4 bg-amber-500 rounded-2xl text-center text-white shadow-lg">
+                                <p class="text-[10px] uppercase font-bold text-amber-100">Energía Captada</p>
+                                <p id="calcEfficiency" class="text-3xl font-black">87%</p>
                             </div>
                         </div>
+                    </div>
+                    <div class="glass p-6 rounded-3xl flex-grow overflow-y-auto">
+                        <h4 class="font-bold text-slate-800 text-xs mb-2">Ley del Coseno</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            La energía que recibe un panel solar depende del ángulo de los rayos. El máximo (100%) ocurre a los <strong>0°</strong> respecto a la vertical (la Normal), donde el coseno vale 1.
+                        </p>
                     </div>
                 </div>
             </section>
@@ -129,22 +136,26 @@
             <!-- SECCIÓN: TANGENTE (NAVEGACIÓN) -->
             <section id="content-lighthouse" class="hidden grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
                 <div class="lg:col-span-3 flex flex-col gap-4">
-                    <div class="glass p-4 rounded-2xl flex-grow flex flex-col">
-                        <div class="flex justify-between items-center mb-2">
-                            <h2 class="font-bold text-teal-700 font-bold">Función Tangente: Triangulación Marina</h2>
-                            <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-[10px] font-mono">d = h / tan(θ)</span>
+                    <div class="glass p-4 rounded-3xl flex-grow flex flex-col">
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="font-bold text-teal-700 text-lg">Función Tangente: Triangulación Marina</h2>
+                            <span class="bg-teal-100 text-teal-800 px-4 py-1 rounded-full text-xs font-mono font-bold">Distancia = Altura / tan(θ)</span>
                         </div>
-                        <div class="canvas-container flex-grow"><canvas id="lighthouseCanvas"></canvas></div>
+                        <div class="canvas-container flex-grow shadow-inner">
+                            <canvas id="lighthouseCanvas"></canvas>
+                        </div>
                     </div>
                 </div>
                 <div class="flex flex-col gap-4">
-                    <div class="glass p-5 rounded-2xl border-l-4 border-teal-500">
-                        <h3 class="font-bold text-slate-800 text-sm mb-3 uppercase">Instrumento del Barco</h3>
-                        <p class="text-[10px] text-slate-500 mb-2">Ángulo de elevación desde cubierta</p>
-                        <input type="range" id="lightAngle" min="10" max="70" value="35">
-                        <div class="mt-6 p-4 bg-teal-50 rounded-xl text-center border border-teal-100">
+                    <div class="glass p-6 rounded-3xl border-l-8 border-teal-500">
+                        <h3 class="font-black text-slate-800 text-sm mb-4 uppercase">Observación</h3>
+                        <label class="block space-y-2">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ángulo de Elevación</span>
+                            <input type="range" id="lightAngle" min="10" max="75" value="35">
+                        </label>
+                        <div class="mt-6 p-5 bg-teal-50 rounded-2xl text-center border border-teal-100">
                             <p class="text-[10px] font-bold text-teal-800 uppercase mb-1">Distancia al Faro</p>
-                            <p id="calcDistance" class="text-3xl font-black text-teal-600 tracking-tighter">0 m</p>
+                            <p id="calcDistance" class="text-4xl font-black text-teal-600 tracking-tighter">0 m</p>
                         </div>
                     </div>
                 </div>
@@ -153,23 +164,25 @@
             <!-- SECCIÓN: ONDAS (SONIDO) -->
             <section id="content-sound" class="hidden grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
                 <div class="lg:col-span-3 flex flex-col gap-4">
-                    <div class="glass p-4 rounded-2xl flex-grow flex flex-col">
-                        <div class="flex justify-between items-center mb-2">
-                            <h2 class="font-bold text-rose-700">Oscilaciones y Tono Musical</h2>
+                    <div class="glass p-4 rounded-3xl flex-grow flex flex-col">
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="font-bold text-rose-700 text-lg">Oscilaciones de Tono Musical</h2>
                         </div>
-                        <div class="canvas-container flex-grow"><canvas id="soundCanvas"></canvas></div>
+                        <div class="canvas-container flex-grow">
+                            <canvas id="soundCanvas"></canvas>
+                        </div>
                     </div>
                 </div>
                 <div class="flex flex-col gap-4">
-                    <div class="glass p-5 rounded-2xl border-l-4 border-rose-500">
-                        <h3 class="font-bold text-slate-800 text-sm mb-4">Consola de Audio</h3>
-                        <label class="block mb-4">
+                    <div class="glass p-6 rounded-3xl border-l-8 border-rose-500">
+                        <h3 class="font-black text-slate-800 text-sm mb-6 uppercase">Control de Onda</h3>
+                        <label class="block mb-6 space-y-2">
                             <span class="text-[10px] font-bold text-slate-500 uppercase">Frecuencia (Hz)</span>
                             <input type="range" id="soundFreq" min="1" max="25" step="0.5" value="8">
                         </label>
-                        <label class="block">
-                            <span class="text-[10px] font-bold text-slate-500 uppercase">Amplitud (A)</span>
-                            <input type="range" id="soundAmp" min="10" max="120" value="60">
+                        <label class="block space-y-2">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase">Amplitud (Volumen)</span>
+                            <input type="range" id="soundAmp" min="10" max="150" value="70">
                         </label>
                     </div>
                 </div>
@@ -180,9 +193,10 @@
     <script>
         let activeTab = 'ferris';
         let time = 0;
-        const canvasMap = {};
-        const ctxMap = {};
+        const canvases = {};
+        const ctxs = {};
 
+        // Inicialización de funciones globales
         function switchTab(tab) {
             activeTab = tab;
             ['ferris', 'solar', 'lighthouse', 'sound'].forEach(t => {
@@ -191,7 +205,7 @@
             });
             document.getElementById(`content-${tab}`).classList.remove('hidden');
             document.getElementById(`tab-${tab}`).classList.add('tab-active');
-            resize(); // Redimensionar inmediatamente para que el canvas tenga el tamaño correcto
+            resize();
         }
 
         function resize() {
@@ -199,67 +213,68 @@
                 const container = c.parentElement;
                 c.width = container.clientWidth;
                 c.height = container.clientHeight;
-                canvasMap[c.id] = c;
-                ctxMap[c.id] = c.getContext('2d');
+                canvases[c.id] = c;
+                ctxs[c.id] = c.getContext('2d');
             });
         }
 
         function drawFerris() {
-            const ctx = ctxMap['ferrisCanvas'];
+            const ctx = ctxs['ferrisCanvas'];
             if (!ctx) return;
-            const w = canvasMap['ferrisCanvas'].width;
-            const h = canvasMap['ferrisCanvas'].height;
+            const w = canvases['ferrisCanvas'].width;
+            const h = canvases['ferrisCanvas'].height;
             const speed = parseFloat(document.getElementById('ferrisSpeed').value);
             time += 0.02 * speed;
             
             ctx.clearRect(0, 0, w, h);
-            const radius = Math.min(w, h) * 0.25;
+            const radius = Math.min(w, h) * 0.3;
             const cx = w * 0.25;
             const cy = h / 2;
 
-            // Estructura
-            ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 4;
+            // Soporte de la noria
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 6;
             ctx.beginPath();
-            ctx.moveTo(cx, cy); ctx.lineTo(cx - 30, cy + radius * 1.2);
-            ctx.moveTo(cx, cy); ctx.lineTo(cx + 30, cy + radius * 1.2);
+            ctx.moveTo(cx, cy); ctx.lineTo(cx - 40, cy + radius + 20);
+            ctx.moveTo(cx, cy); ctx.lineTo(cx + 40, cy + radius + 20);
             ctx.stroke();
 
-            // Círculo base
-            ctx.strokeStyle = '#cbd5e1';
-            ctx.lineWidth = 1;
+            // Círculo de la noria
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 2;
             ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.stroke();
 
-            // Cálculo ángulo
+            // Cabina y Ángulo
             const angleRad = time % (Math.PI * 2);
-            const angleDeg = Math.round((angleRad * 180 / Math.PI));
-            document.getElementById('ferrisAngleVal').innerText = angleDeg + "°";
+            document.getElementById('ferrisAngleVal').innerText = Math.round(angleRad * 180 / Math.PI) + "°";
             
             const px = cx + radius * Math.cos(angleRad);
             const py = cy - radius * Math.sin(angleRad);
 
-            // Ángulo visual
+            // Arco del ángulo
             ctx.strokeStyle = '#4f46e5';
-            ctx.lineWidth = 3;
-            ctx.beginPath(); ctx.arc(cx, cy, 30, 0, -angleRad, true); ctx.stroke();
+            ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.arc(cx, cy, 40, 0, -angleRad, true); ctx.stroke();
 
-            // Proyección senoidal
-            ctx.setLineDash([4, 4]);
-            ctx.strokeStyle = '#94a3b8';
+            // Línea de proyección
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = '#cbd5e1';
             ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(w * 0.45, py); ctx.stroke();
             ctx.setLineDash([]);
 
             // Cabina
             ctx.fillStyle = '#4f46e5';
-            ctx.beginPath(); ctx.arc(px, py, 12, 0, Math.PI * 2); ctx.fill();
+            ctx.shadowBlur = 10; ctx.shadowColor = 'rgba(79, 70, 229, 0.5)';
+            ctx.beginPath(); ctx.arc(px, py, 14, 0, Math.PI * 2); ctx.fill();
+            ctx.shadowBlur = 0;
 
-            // Onda
+            // Onda Senoidal
             ctx.beginPath();
             ctx.strokeStyle = '#4f46e5';
             ctx.lineWidth = 3;
             for(let i = 0; i < w * 0.5; i++) {
                 const waveX = w * 0.45 + i;
-                const waveY = cy - radius * Math.sin(angleRad - i * 0.05);
+                const waveY = cy - radius * Math.sin(angleRad - i * 0.04);
                 if(i === 0) ctx.moveTo(waveX, waveY);
                 else ctx.lineTo(waveX, waveY);
             }
@@ -267,124 +282,168 @@
         }
 
         function drawSolar() {
-            const ctx = ctxMap['solarCanvas'];
+            const ctx = ctxs['solarCanvas'];
             if (!ctx) return;
-            const w = canvasMap['solarCanvas'].width;
-            const h = canvasMap['solarCanvas'].height;
+            const w = canvases['solarCanvas'].width;
+            const h = canvases['solarCanvas'].height;
             const inputVal = parseFloat(document.getElementById('solarAngle').value);
+            const thetaRad = inputVal * Math.PI / 180;
+            const efficiency = Math.cos(thetaRad);
             
-            const thetaDeg = Math.abs(inputVal - 90);
-            const thetaRad = thetaDeg * Math.PI / 180;
-            const efficiency = Math.max(0, Math.cos(thetaRad));
-            
-            document.getElementById('solarAngleVal').innerText = thetaDeg.toFixed(0) + "°";
+            document.getElementById('solarAngleVal').innerText = inputVal + "°";
             document.getElementById('calcEfficiency').innerText = Math.round(efficiency * 100) + "%";
 
             ctx.clearRect(0, 0, w, h);
             const cx = w / 2;
-            const bottomY = h - 60;
+            const centerY = h - 100;
 
-            // Panel
-            ctx.fillStyle = '#334155';
-            ctx.beginPath(); ctx.roundRect(cx - 100, bottomY, 200, 15, 5); ctx.fill();
+            // Panel Solar
+            ctx.fillStyle = '#1e293b';
+            ctx.beginPath();
+            ctx.roundRect(cx - 150, centerY, 300, 15, 5);
+            ctx.fill();
 
-            // Normal
-            ctx.setLineDash([5, 5]);
+            // Normal (Referencia 0°)
+            ctx.setLineDash([6, 6]);
             ctx.strokeStyle = '#94a3b8';
-            ctx.beginPath(); ctx.moveTo(cx, bottomY); ctx.lineTo(cx, bottomY - 150); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx, centerY); ctx.lineTo(cx, 50); ctx.stroke();
             ctx.setLineDash([]);
 
-            // Sol y Rayo
-            const sunRad = inputVal * Math.PI / 180;
-            const dist = 180;
-            const sx = cx + Math.cos(sunRad) * dist;
-            const sy = bottomY - Math.sin(sunRad) * dist;
+            // Cálculo posición del Sol
+            const sunDist = Math.min(w, h) * 0.65;
+            const sx = cx + Math.sin(thetaRad) * sunDist;
+            const sy = centerY - Math.cos(thetaRad) * sunDist;
 
-            ctx.strokeStyle = `rgba(245, 158, 11, ${efficiency * 0.7 + 0.3})`;
-            ctx.lineWidth = 8;
-            ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(cx, bottomY); ctx.stroke();
+            // Rayo de luz
+            const grad = ctx.createLinearGradient(sx, sy, cx, centerY);
+            grad.addColorStop(0, `rgba(251, 191, 36, ${efficiency})`);
+            grad.addColorStop(1, 'rgba(251, 191, 36, 0.1)');
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 10;
+            ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(cx, centerY); ctx.stroke();
 
-            // Ángulo Theta
+            // Arco del ángulo desde la Normal
             ctx.strokeStyle = '#f59e0b';
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 4;
             ctx.beginPath();
-            ctx.arc(cx, bottomY, 40, -Math.PI/2, -sunRad, inputVal < 90);
+            ctx.arc(cx, centerY, 80, -Math.PI/2, -Math.PI/2 + thetaRad, inputVal < 0);
             ctx.stroke();
 
             // Sol
+            ctx.shadowBlur = 30; ctx.shadowColor = '#fbbf24';
             ctx.fillStyle = '#fbbf24';
-            ctx.beginPath(); ctx.arc(sx, sy, 18, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(sx, sy, 35, 0, Math.PI*2); ctx.fill();
+            ctx.shadowBlur = 0;
+            
+            ctx.fillStyle = '#b45309';
+            ctx.font = 'bold 12px Inter';
+            ctx.fillText('Normal (0°)', cx + 10, 70);
         }
 
         function drawLighthouse() {
-            const ctx = ctxMap['lighthouseCanvas'];
+            const ctx = ctxs['lighthouseCanvas'];
             if (!ctx) return;
-            const w = canvasMap['lighthouseCanvas'].width;
-            const h = canvasMap['lighthouseCanvas'].height;
+            const w = canvases['lighthouseCanvas'].width;
+            const h = canvases['lighthouseCanvas'].height;
             const angleDeg = parseFloat(document.getElementById('lightAngle').value);
             const angleRad = angleDeg * Math.PI / 180;
             
-            const hFaro = 140;
-            const dist = hFaro / Math.tan(angleRad);
-            document.getElementById('calcDistance').innerText = Math.round(dist) + " m";
+            // Constantes de dibujo
+            const hFaro = 140; // Altura visual del faro
+            const seaLevel = h - 100;
+            const faroX = w - 150;
+
+            // Calculamos la distancia real basada en la tangente (d = h / tan(θ))
+            // Usamos un factor de escala para que se vea bien, pero manteniendo la proporción
+            const distVisual = hFaro / Math.tan(angleRad);
+            
+            // Posición del barco
+            const bx = faroX - distVisual;
+            const by = seaLevel;
+
+            document.getElementById('calcDistance').innerText = Math.round(distVisual) + " m";
 
             ctx.clearRect(0, 0, w, h);
-            const seaLevel = h - 70;
-            const faroX = w - 80;
 
-            // Mar con degradado
-            const grad = ctx.createLinearGradient(0, seaLevel, 0, h);
-            grad.addColorStop(0, '#0ea5e9'); grad.addColorStop(1, '#0369a1');
-            ctx.fillStyle = grad; ctx.fillRect(0, seaLevel, w, 70);
-
-            // Tierra
-            ctx.fillStyle = '#475569';
-            ctx.fillRect(faroX - 20, seaLevel - 15, 100, 15);
+            // Mar
+            const seaGrad = ctx.createLinearGradient(0, seaLevel, 0, h);
+            seaGrad.addColorStop(0, '#0ea5e9'); seaGrad.addColorStop(1, '#0369a1');
+            ctx.fillStyle = seaGrad; ctx.fillRect(0, seaLevel, w, 100);
 
             // Faro
             ctx.fillStyle = '#ef4444';
-            ctx.fillRect(faroX, seaLevel - 15 - hFaro, 30, hFaro);
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(faroX, seaLevel - 45, 30, 20);
-            ctx.fillRect(faroX, seaLevel - 105, 30, 20);
+            ctx.fillRect(faroX, seaLevel - hFaro, 40, hFaro);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(faroX, seaLevel - hFaro + 30, 40, 25);
+            ctx.fillRect(faroX, seaLevel - hFaro + 85, 40, 25);
 
-            // Barco (Posición dinámica basada en tangente)
-            // Limitamos bx para que no se salga de la pantalla
-            const bx = Math.max(40, faroX - dist);
-            const by = seaLevel - 5;
+            // Dibujar solo si el barco está dentro del canvas
+            if (bx > 50) {
+                // Línea de visión (Hipotenusa)
+                ctx.setLineDash([5, 5]);
+                ctx.strokeStyle = '#64748b';
+                ctx.lineWidth = 2;
+                ctx.beginPath(); 
+                ctx.moveTo(bx, by); 
+                ctx.lineTo(faroX, seaLevel - hFaro); 
+                ctx.stroke();
+                ctx.setLineDash([]);
 
-            // Línea de visión
-            ctx.setLineDash([5, 5]);
-            ctx.strokeStyle = '#94a3b8';
-            ctx.beginPath(); ctx.moveTo(faroX + 15, seaLevel - 15 - hFaro); ctx.lineTo(bx, seaLevel); ctx.stroke();
-            ctx.setLineDash([]);
+                // Arco del ángulo (Ajustado perfectamente a la hipotenusa)
+                ctx.strokeStyle = '#0d9488';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                // El arco va desde 0 (horizontal) hasta -angleRad (hacia arriba)
+                ctx.arc(bx, by, 60, 0, -angleRad, true);
+                ctx.stroke();
 
-            // Ángulo en el barco
-            ctx.strokeStyle = '#0d9488';
-            ctx.lineWidth = 3;
-            ctx.beginPath(); ctx.arc(bx, seaLevel, 40, 0, -angleRad, true); ctx.stroke();
-            ctx.fillStyle = '#0d9488';
-            ctx.font = 'bold 12px Inter';
-            ctx.fillText(`θ = ${angleDeg}°`, bx + 45, seaLevel - 15);
+                // Etiquetas de medidas
+                ctx.fillStyle = '#0d9488';
+                ctx.font = 'bold 14px Inter';
+                ctx.fillText(`θ = ${angleDeg}°`, bx + 70, by - 25);
+                
+                // Indicador de Altura (h)
+                ctx.strokeStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.moveTo(faroX + 50, seaLevel);
+                ctx.lineTo(faroX + 50, seaLevel - hFaro);
+                ctx.stroke();
+                ctx.fillText(`h = ${hFaro}m`, faroX + 60, seaLevel - hFaro/2);
 
-            // Barco Emoji
-            ctx.font = '40px serif';
-            ctx.fillText('⛵', bx - 20, by);
+                // Barco
+                ctx.font = '50px serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('⛵', bx, by + 10);
+                ctx.textAlign = 'start';
+            } else {
+                // Aviso si el barco está muy lejos
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '14px Inter';
+                ctx.fillText('El barco está fuera de la zona de visión (ángulo muy pequeño)', 50, h/2);
+            }
         }
 
         function drawSound() {
-            const ctx = ctxMap['soundCanvas'];
+            const ctx = ctxs['soundCanvas'];
             if (!ctx) return;
-            const w = canvasMap['soundCanvas'].width;
-            const h = canvasMap['soundCanvas'].height;
+            const w = canvases['soundCanvas'].width;
+            const h = canvases['soundCanvas'].height;
             const freq = parseFloat(document.getElementById('soundFreq').value);
             const amp = parseFloat(document.getElementById('soundAmp').value);
             
-            time += 0.04;
+            time += 0.05;
             ctx.clearRect(0, 0, w, h);
+            
+            // Rejilla de fondo
+            ctx.strokeStyle = '#f1f5f9';
+            ctx.lineWidth = 1;
+            for(let i=0; i<w; i+=50) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,h); ctx.stroke(); }
+            for(let i=0; i<h; i+=50) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(w,i); ctx.stroke(); }
+
             ctx.beginPath();
             ctx.strokeStyle = '#f43f5e';
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 4;
+            ctx.shadowBlur = 10; ctx.shadowColor = 'rgba(244, 63, 94, 0.4)';
 
             for(let x = 0; x < w; x++) {
                 const waveY = h/2 + Math.sin(x * freq * 0.01 - time) * amp;
@@ -392,12 +451,7 @@
                 else ctx.lineTo(x, waveY);
             }
             ctx.stroke();
-
-            // Línea guía
-            ctx.setLineDash([2, 5]);
-            ctx.strokeStyle = '#cbd5e1';
-            ctx.beginPath(); ctx.moveTo(0, h/2); ctx.lineTo(w, h/2); ctx.stroke();
-            ctx.setLineDash([]);
+            ctx.shadowBlur = 0;
         }
 
         function animate() {
